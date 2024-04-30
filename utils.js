@@ -1,3 +1,7 @@
+import fs from "fs";
+
+const fsp = fs.promises;
+
 const readFile = async (file) => {
     let fileData = await fsp.readFile(file, "utf8");
     let jsonData = JSON.parse(fileData);
