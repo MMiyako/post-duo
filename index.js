@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { readFile, sleep } from "./utils.js";
 
 (async () => {
@@ -13,11 +15,10 @@ import { readFile, sleep } from "./utils.js";
         "user-agent": config.userAgent,
     };
 
-    let session = await fetch(config[course].url, {
-        body: JSON.stringify(config[course].body),
-        headers,
-        method: "POST",
-    }).then((response) => response.json());
+    // Switch from Node Fetch API to Axios to prevent unnecessary HTTP requests to GitHub and avoid errors under restricted network conditions.
+
+    // Destructuring "data" from axios response then rename it to "session"
+    let { data: session } = await axios.post(config[course].url, config[course].body, { headers });
 
     let startTime = Math.floor(Date.now() / 1000);
 
@@ -25,16 +26,16 @@ import { readFile, sleep } from "./utils.js";
 
     let endTime = Math.floor(Date.now() / 1000);
 
-    let result = await fetch(`${config[course].url}/${session.id}`, {
-        body: JSON.stringify({
+    let { data: result } = await axios.put(
+        `${config[course].url}/${session.id}`,
+        {
             ...session,
             ...config[course].session,
-            endTime: endTime,
-            startTime: startTime,
-        }),
-        headers,
-        method: "PUT",
-    }).then((response) => response.json());
+            endTime,
+            startTime,
+        },
+        { headers }
+    );
 
     console.log(result.xpGain);
 })();
