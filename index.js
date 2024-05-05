@@ -1,4 +1,5 @@
 import axios from "axios";
+import chalk from "chalk";
 
 import { readFile, sleep } from "./utils.js";
 
@@ -7,7 +8,7 @@ import { readFile, sleep } from "./utils.js";
 
     let params = process.argv.slice(2);
     let course = params[0];
-    let duration = params[1];
+    let duration = params[1] ? +params[1] : 60;
 
     let headers = {
         Authorization: `Bearer ${config.JWT}`,
@@ -21,6 +22,10 @@ import { readFile, sleep } from "./utils.js";
     let { data: session } = await axios.post(config[course].url, config[course].body, { headers });
 
     let startTime = Math.floor(Date.now() / 1000);
+
+    console.log(chalk.hex("#fb4646")(`Duration: ${duration}s`));
+
+    countdown(duration);
 
     await sleep(duration);
 
@@ -37,5 +42,20 @@ import { readFile, sleep } from "./utils.js";
         { headers }
     );
 
-    console.log(result.xpGain);
+    console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
 })();
+
+const countdown = (seconds) => {
+    let interval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+            clearInterval(interval);
+            process.stdout.clearLine();
+            process.stdout.cursorTo(0);
+        } else {
+            process.stdout.write(
+                chalk.hex("#f8ca82")("\rCountdown: " + seconds.toString().padStart(3, " ") + " seconds remaining...")
+            );
+        }
+    }, 1000);
+};
