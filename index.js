@@ -2,6 +2,7 @@ import axios from "axios";
 import chalk from "chalk";
 
 import { readFile, sleep } from "./utils.js";
+import logger from "./logger.js";
 
 (async () => {
     let config = await readFile("data/config.json");
@@ -42,7 +43,10 @@ import { readFile, sleep } from "./utils.js";
         { headers }
     );
 
-    console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
+    if (result) {
+        await logger(course, duration, result.xpGain);
+        console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
+    }
 })();
 
 const countdown = (seconds) => {
