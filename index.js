@@ -19,6 +19,16 @@ import logger from "./logger.js";
 
     // Switch from Node Fetch API to Axios to prevent unnecessary HTTP requests to GitHub and avoid errors under restricted network conditions.
 
+    // Double destructuring
+    let {
+        data: { learningLanguage },
+    } = await axios.get(config.learningLanguage, { headers });
+
+    if (learningLanguage != course) {
+        console.log(chalk.hex("#fb4646")(`Wrong course! (${learningLanguage})`));
+        return;
+    }
+
     // Destructuring "data" from axios response then rename it to "session"
     let { data: session } = await axios.post(config[course].url, config[course].body, { headers });
 
