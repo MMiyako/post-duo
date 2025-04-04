@@ -1,7 +1,7 @@
 import { spawnSync } from "child_process";
 import chalk from "chalk";
 
-import { randomBetween, sleep } from "./utils.js";
+import { randomBetween, readFile, sleep } from "./utils.js";
 
 // node script.js <language> <times> [min_duration] [max_duration]
 // Example: node script.js fi 5
@@ -28,3 +28,7 @@ for (let index = 1; index <= params[1]; index++) {
 
 console.timeEnd("Run time");
 console.log(`----------------------------------------`);
+
+let log = await readFile("data/log.json");
+
+console.dir(log[0], { depth: null });

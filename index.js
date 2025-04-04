@@ -42,20 +42,24 @@ import logger from "./logger.js";
 
     let endTime = Math.floor(Date.now() / 1000);
 
-    let { data: result } = await axios.put(
-        `${config[course].url}/${session.id}`,
-        {
-            ...session,
-            ...config[course].session,
-            endTime,
-            startTime,
-        },
-        { headers }
-    );
+    try {
+        let { data: result } = await axios.put(
+            `${config[course].url}/${session.id}`,
+            {
+                ...session,
+                ...config[course].session,
+                endTime,
+                startTime,
+            },
+            { headers }
+        );
 
-    if (result) {
-        await logger(course, duration, result.xpGain);
-        console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
+        if (result) {
+            await logger(course, duration, result.xpGain);
+            console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
+        }
+    } catch (error) {
+        console.log(chalk.hex("#ec3636")("ERROR!"));
     }
 })();
 
