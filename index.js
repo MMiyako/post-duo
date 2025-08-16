@@ -29,8 +29,15 @@ import logger from "./logger.js";
         return;
     }
 
-    // Destructuring "data" from axios response then rename it to "session"
-    let { data: session } = await axios.post(config[course].url, config[course].body, { headers });
+    let session;
+
+    try {
+        // Destructuring "data" from axios response
+        ({ data: session } = await axios.post(config[course].url, config[course].body, { headers }));
+    } catch (error) {
+        console.log(chalk.hex("#ec3636")("ERROR! (GET)"));
+        process.exit();
+    }
 
     let startTime = Math.floor(Date.now() / 1000);
 
@@ -59,7 +66,7 @@ import logger from "./logger.js";
             console.log(chalk.hex("#16da51")(`EXP: ${result.xpGain}`));
         }
     } catch (error) {
-        console.log(chalk.hex("#ec3636")("ERROR!"));
+        console.log(chalk.hex("#ec3636")("ERROR! (POST)"));
     }
 })();
 
